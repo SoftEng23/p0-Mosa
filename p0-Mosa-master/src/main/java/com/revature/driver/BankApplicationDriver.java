@@ -67,6 +67,7 @@ public class BankApplicationDriver implements Runnable { // implements Runnable 
 //		String lName =null;
 		String firstName = null;
 		String lastName = null;
+		String user_type = null;
 		//String username = null;
 		//String password = null;
 		UserDao userDao = new UserDaoFile();
@@ -89,15 +90,15 @@ public class BankApplicationDriver implements Runnable { // implements Runnable 
 		ResultSet rs = stmt.executeQuery(query);
 		
 		//add insert query
-		String query1 = "insert into p0_user (id,first_name,last_name,username,password,user_type) values (?,?,?,?,?,?)";
+	/*	String query1 = "insert into p0_user (id,first_name,last_name,username,password,user_type) values (?,?,?,?,?,?)";
 		PreparedStatement pstmt = conn.prepareStatement(query1);
-		pstmt.setInt(1, 111);
-		pstmt.setString(2, "Kyle");
-		pstmt.setString(3, "Wells");
-		pstmt.setString(4, "kylewells");
-		pstmt.setString(5, "123");
+		pstmt.setInt(1, 112);
+		pstmt.setString(2, "Jim");
+		pstmt.setString(3, "Wilson");
+		pstmt.setString(4, "jimmy");
+		pstmt.setString(5, "234");
 		pstmt.setString(6, "CUSTOMER");
-		pstmt.executeUpdate();
+		pstmt.executeUpdate(); */
 		//Step 4: 
 		System.out.println("p0_user Table Content");
 		System.out.println("id \t first_name \t last_name ");
@@ -157,10 +158,8 @@ public class BankApplicationDriver implements Runnable { // implements Runnable 
 			
 					
 			case 2:
-				usersService = new UserServiceImpl();
-				User emp = null;
-				id = UserDaoFile.usersList.size();
-				System.out.println("Enter SSN:");
+				/*usersService = new UserServiceImpl();
+				System.out.print("Enter Id :");
 				id = input.nextInt();
 				System.out.print("Enter Username :");
 				username = input.next();
@@ -170,9 +169,33 @@ public class BankApplicationDriver implements Runnable { // implements Runnable 
 				firstName = input.next();
 				System.out.print("Enter Last Name :");
 				lastName = input.next();
-				emp = new User(id++, firstName, lastName, username, password, UserType.CUSTOMER);
-				userService.register(emp);
-				System.out.println(emp);
+				System.out.println("Are you a Customer or Employee?");
+				user_type = input.next();
+				usersService.register(id,username,password,firstName, lastName, user_type);
+				System.out.println("You have successfully registered");
+				break; */
+				User newUser = null;
+			//	id = UserDaoFile.usersList.size();
+				
+				System.out.println("Enter SSN:");
+				id = input.nextInt();
+				System.out.print("Enter Username :");
+				username = input.next();
+				System.out.print("Enter First Name :");
+				firstName = input.next();
+				System.out.print("Enter Last Name :");
+				lastName = input.next();
+				
+				System.out.print("Enter Password :");
+				password = input.next();
+				
+				newUser = new User(id++, firstName, lastName, username, password, UserType.CUSTOMER);
+				newUser.setFirstName(firstName);
+				newUser.setLastName(lastName);
+				newUser.setUsername(username);
+				newUser.setPassword(password);
+				userService.register(newUser);
+				System.out.println(newUser);
 	
 				break;
 			case 3:
