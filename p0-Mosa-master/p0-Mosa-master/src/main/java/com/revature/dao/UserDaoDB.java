@@ -141,7 +141,7 @@ public class UserDaoDB implements UserDao {
 	}
 
 	public User updateUser(User u) {
-		String query = "update p0_user set first_name?, last_name=? username=?, where id = ?";
+		String query = "update p0_user set first_name?, last_name=? username=?, where id =?";
 		try {
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, u.getFirstName());

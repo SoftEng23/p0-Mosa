@@ -16,6 +16,7 @@ import com.revature.beans.Transaction.TransactionType;
 import com.revature.beans.User;
 import com.revature.beans.User.UserType;
 import com.revature.dao.AccountDaoFile;
+import com.revature.dao.TransactionDaoDB;
 import com.revature.dao.TransactionDaoFile;
 import com.revature.dao.UserDaoDB;
 import com.revature.services.UserServiceImpl;
@@ -82,26 +83,19 @@ public class BankApplicationDriver implements Runnable { // implements Runnable 
 
 		// Step 3: Creating & Running the Queries
 		UserDaoDB userDao = new UserDaoDB();
+		TransactionDaoDB transactionDao = new TransactionDaoDB();
 		// String query = "select * from p0_user";
 		Statement stmt = conn.createStatement();
 		// ResultSet rs = stmt.executeQuery(query);
-		if (rs != null)
-			rs.close();
-		if (stmt != null)
-			stmt.close();
-		if (conn != null)
-			conn.close();
+	
 
 		// Step 4:
 		/*
-		 * System.out.println("p0_user Table Content");
-		 * System.out.println("id \t first_name \t last_name "); while(rs.next()) {
-		 * System.out.println(rs.getInt("id")+"\t" + rs.getString("first_name") + "\t\t"
-		 * + rs.getString("last_name")); }
+		
 		 */
 
 		Scanner input = new Scanner(System.in);
-		while (choice < 6) {
+		while (choice < 7) {
 			BankApplicationDriver.printLine();
 			System.out.println("***** \t\t\t\t\t\t\t\t\t\t *****");
 			System.out.println("***** \t\t\t\t\t\t\t\t\t\t *****");
@@ -111,11 +105,12 @@ public class BankApplicationDriver implements Runnable { // implements Runnable 
 			BankApplicationDriver.printLine();
 			System.out.println("\n\t\t\t 1. Login ");
 			System.out.println("\t\t\t 2. Register ");
-			System.out.println("\t\t\t 3. Make Deposit ");
-			System.out.println("\t\t\t 4. Make Withdrawal ");
-			System.out.println("\t\t\t 5. Create an Account ");
-			System.out.println("\t\t\t 6. Exit");
-			System.out.print("Enter your Choice [1-6] :");
+			System.out.println("\t\t\t 3. View Customers ");
+			System.out.println("\t\t\t 4. Make Deposit ");
+			System.out.println("\t\t\t 5. Make Withdrawal ");
+			System.out.println("\t\t\t 6. Create an Account ");
+			System.out.println("\t\t\t 7. Exit");
+			System.out.print("Enter your Choice [1-7] :");
 			choice = input.nextInt();
 			// String username = null;
 			// String password = null;
@@ -131,7 +126,7 @@ public class BankApplicationDriver implements Runnable { // implements Runnable 
 				if (usersService.login(username, password))
 					System.out.println("Login is Successful!!!");
 				else {
-					System.out.println("Error while Logging. Pls Check the username / password!!!");
+					System.out.println("Error while Logging In. Please Check the username and/or password!!!");
 				}
 				break;
 			case 2:
@@ -166,11 +161,41 @@ public class BankApplicationDriver implements Runnable { // implements Runnable 
 			 * newUser.setPassword(password); userService.register(newUser);
 			 * System.out.println(newUser);
 			 */
-
 			case 3:
+
+				getConnection();
+				//Step 3: Creating & Running the Queries
+				String query = "select * from p0_user";
+			//	Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(query);
+				
+				System.out.println("p0_user Table Content");
+				System.out.println("id \t first_name \t last_name ");
+				while(rs.next()) {
+					System.out.println(rs.getInt("id")+"\t" + rs.getString("first_name") + "\t\t" + rs.getString("last_name"));
+				}
+					
+				/*System.out.print("Enter Id of Customer to Update: ");
+				id = input.nextInt();
+				System.out.print("Enter First Name to Update :");
+				firstName = input.next();
+				System.out.print("Enter Last Name :");
+				lastName = input.next();
+				System.out.print("Enter userName :");
+				username = input.next();
+				System.out.print("Enter Password :");
+				password = input.next();
+				User updatedUser = new User();
+				updatedUser.setFirstName(firstName);
+				updatedUser.setLastName(lastName);
+				updatedUser.setUsername(username);
+				updatedUser.setPassword(password);*/
+				
+				break;
+			case 4:
 				ownerId = 2;
 				usersService = new UserServiceImpl();
-				// id = AccountDaoFile.usersList.size();
+			 //id = AccountDaoFile.usersList.size();
 				id = 2;
 				transactions = TransactionDaoFile.usersList;
 
@@ -189,7 +214,7 @@ public class BankApplicationDriver implements Runnable { // implements Runnable 
 				Integer checking = input.nextInt();
 
 				if (checking == 1) {
-					System.out.println("\t\t\t==How Much Do You Want to Deposit into Checkings?== ");
+					System.out.println("\t\t\t==How Much Do You Want to Deposit into Checking?== ");
 				} else {
 					System.out.println("\t\t\t==How Much Do You Want to Deposit into Savings?== ");
 				}
@@ -202,10 +227,13 @@ public class BankApplicationDriver implements Runnable { // implements Runnable 
 				list.setAmount(amount);
 				list.setTimestamp();
 				list.setRecipient(accountService);
+				
 				System.out.println(list);
 				System.out.println("\n You deposited: " + amount);
+			//	transactionDao.addTransaction(list); //added
+			//	System.out.println(list); //added
 				break;
-			case 4:
+			case 5:
 				LoggedOn = true;
 				// System.out.println(userDao.getAllUsers());
 				id = AccountDaoFile.usersList.size();
@@ -239,8 +267,7 @@ public class BankApplicationDriver implements Runnable { // implements Runnable 
 				System.out.println(list2);
 				System.out.println("\n You Made of Withdrawal for: " + amount2);
 				break;
-			case 5:
-
+			case 6:
 				System.out.print("\t\t\t Let's Create An Account:");
 				System.out.print("\n Enter 1 for Checking or 2 for Savings:");
 
@@ -273,13 +300,14 @@ public class BankApplicationDriver implements Runnable { // implements Runnable 
 
 				System.out.println("Your account # is: " + accnum);
 				break;
-			case 6:
+				
+			case 7:
 				System.out.println("Thanks for using Revature Bank!!! Have a Nice Day!!!");
 				System.exit(0);
 				break;
 			default:
-				break;
-
+				break;				
+				
 			}
 
 		}
