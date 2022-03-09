@@ -33,7 +33,7 @@ public class AccountDaoDB implements AccountDao {
 
 	public Account addAccount(Account a) {
 		// TODO Auto-generated method stub
-		String query = "insert into account (owner_id,balance,account_type,approved)";
+		String query = "insert into accounts (owner_id,balance,account_type,approved)";
 		
 		try {
 			pstmt = conn.prepareStatement(query);

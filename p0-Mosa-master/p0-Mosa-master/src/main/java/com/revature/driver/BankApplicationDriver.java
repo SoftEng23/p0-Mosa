@@ -195,7 +195,7 @@ public class BankApplicationDriver implements Runnable { // implements Runnable 
 			case 4:
 				ownerId = 2;
 				usersService = new UserServiceImpl();
-			 //id = AccountDaoFile.usersList.size();
+			// id = AccountDaoFile.usersList.size();
 				id = 2;
 				transactions = TransactionDaoFile.usersList;
 
@@ -268,6 +268,7 @@ public class BankApplicationDriver implements Runnable { // implements Runnable 
 				System.out.println("\n You Made of Withdrawal for: " + amount2);
 				break;
 			case 6:
+
 				System.out.print("\t\t\t Let's Create An Account:");
 				System.out.print("\n Enter 1 for Checking or 2 for Savings:");
 
@@ -306,8 +307,8 @@ public class BankApplicationDriver implements Runnable { // implements Runnable 
 				System.exit(0);
 				break;
 			default:
-				break;				
-				
+				break;
+
 			}
 
 		}
