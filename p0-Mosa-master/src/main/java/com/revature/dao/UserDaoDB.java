@@ -1,6 +1,7 @@
 package com.revature.dao;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,23 +25,31 @@ public class UserDaoDB implements UserDao {
 	public UserDaoDB () {
 		conn = ConnectionUtil.getConnection();
 	}
-	
-	public User addUser(User user) {
+	public static void getConnection() {
+		try {
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/p0","root","Softw@re23!");
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	public User addUser(User u) {
+		getConnection();
 		// TODO Auto-generated method stub
-		String query ="insert into p0_user ( firstName, lastName, username,password,UserType.CUSTOMER) values (?,?,?,?,?)";
+		String query ="insert into p0_user (first_name, last_name, username,password,user_type) values (?,?,?,?,?)";
 		try {
 			pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, user.getFirstName());
-			pstmt.setString(2, user.getLastName());
-			pstmt.setString(3, user.getUsername());
-			pstmt.setString(4, user.getPassword());
-			pstmt.setObject(5, user.getUserType());
+			pstmt.setString(1, u.getFirstName());
+			pstmt.setString(2, u.getLastName());
+			pstmt.setString(3, u.getUsername());
+			pstmt.setString(4, u.getPassword());
+			System.out.println("user_type = " + u.getUserType());
+			pstmt.setObject(5, u.getUserType().toString());
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return user;
+		return u;
 	}
 	
 		/*String query = "insert into p0_user ( firstName, lastName, username,password,user_type) values (?,?,?,?,?)";
@@ -71,9 +80,9 @@ public class UserDaoDB implements UserDao {
 					user.setId(rs.getInt("id"));
 					user.setFirstName(rs.getString("first_name"));
 					user.setLastName(rs.getString("last_name"));
-					user.setUsername(rs.getString("usernamename"));
+					user.setUsername(rs.getString("username"));
 					user.setPassword(rs.getString("password"));
-					user.setUserType((UserType) rs.getObject("user_type"));
+					user.setUserType(rs.getString("user_type"));
 			//		user.getAccounts()
 			}
 		} catch (SQLException e) {
@@ -86,20 +95,19 @@ public class UserDaoDB implements UserDao {
 
 	public User getUser(String username, String pass) {
 		// TODO Auto-generated method stub
-		String query = "select * from p0_user where username=? and password=?";
-		User user = new User();
+		String query = "select * from p0_user where username='"+username+"' and password='"+pass+"';";
+		User user = null;
 		try {
-			pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, username);
-			pstmt.setString(2, pass);
+			stmt = conn.createStatement();
 			rs = stmt.executeQuery(query);
 			if (rs.next()) {
+					user = new User();
 					user.setId(rs.getInt("id"));
 					user.setFirstName(rs.getString("first_name"));
 					user.setFirstName(rs.getString("last_name"));
-					user.setFirstName(rs.getString("usernamename"));
+					user.setFirstName(rs.getString("username"));
 					user.setFirstName(rs.getString("password"));
-					user.setUserType((UserType) rs.getObject("user_type"));
+					user.setUserType(rs.getString("user_type"));
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -122,7 +130,7 @@ public class UserDaoDB implements UserDao {
 				u.setFirstName(rs.getString("first_name"));
 				u.setLastName(rs.getString("last_name"));
 				u.setUsername(rs.getString("username"));
-				u.setUserType((UserType) rs.getObject("user_type"));
+				u.setUserType(rs.getString("user_type"));
 				userList.add(u);
 			}
 		} catch (Exception e) {
@@ -132,29 +140,37 @@ public class UserDaoDB implements UserDao {
 	}
 
 	public User updateUser(User u) {
-		String query = "update p0_user set first_name?, last_name=? username=?, where id = ?";
+		String query = "update p0_user set first_name=?, last_name=?, username=?, password=?, user_type=? where id = ?";
+		int status = 0;
 		try {
 			pstmt = conn.prepareStatement(query);
+	
 			pstmt.setString(1, u.getFirstName());
 			pstmt.setString(2, u.getLastName());
 			pstmt.setString(3, u.getUsername());
-			pstmt.setString(3, u.getPassword());
-			pstmt.setObject(5, u.getUserType());
+			pstmt.setString(4, u.getPassword());
+			System.out.println("user_type = " + u.getUserType());
+			pstmt.setObject(5, u.getUserType().toString());
+			pstmt.setInt(6, u.getId());
+			status = pstmt.executeUpdate();
+			if (status > 0)
+				System.out.println("User Successfully Registered. Please Login to continue!!!");
+		
+			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return u;
 	}
-
 	public boolean removeUser(User u) {
 		// TODO Auto-generated method stub
-		String query = "delete p0_user where id =" + u.getId();
+		String query = "delete from p0_user where id =" + u.getId();
 		boolean status = false;
 		try {
 			stmt = conn.createStatement();
 			status = stmt.execute(query);
-			
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -10,4 +10,6 @@ public interface UsersService {
 	
 	public boolean logout();
 
+	public void register(int id, String username, String password, String firstName, String lastName, String user_type);
+
 }

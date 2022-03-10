@@ -52,12 +52,14 @@ public class UserServiceImpl implements UsersService {
 		int insertStatus = 0;
 		try {
 			pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, user.getFirstName());
-			pstmt.setString(2, user.getLastName());
-			pstmt.setString(3, user.getUsername());
-			pstmt.setString(4, user.getPassword());
-			pstmt.setObject(5, UserType.CUSTOMER);
-			insertStatus = pstmt.executeUpdate();
+			pstmt.setInt(1, user.getId());
+			pstmt.setString(2, user.getUsername());
+			pstmt.setString(3, user.getPassword());
+			pstmt.setString(4, user.getFirstName());
+			pstmt.setString(5, user.getLastName());
+			pstmt.setObject(6, UserType.CUSTOMER);
+		//	pstmt.setLong(6, user.getAccounts());
+			pstmt.executeUpdate();
 			if (insertStatus > 0)
 				status = true;
 		} catch (SQLException e) {
@@ -88,6 +90,13 @@ public class UserServiceImpl implements UsersService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void register(int id, String username, String password, String firstName, String lastName,
+			String user_type) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

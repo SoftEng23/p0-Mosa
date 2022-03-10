@@ -36,7 +36,9 @@ public class UserService {
 		}else {
 			return checkLogin;
 		}
-	}
+	} /*
+			return userDao.getUser(username, password);
+		}*/
 	
 	/**
 	 * Creates the specified User in the persistence layer

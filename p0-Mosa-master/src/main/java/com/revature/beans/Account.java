@@ -47,8 +47,8 @@ public class Account implements Serializable {
 	public AccountType getType() {
 		return type;
 	}
-	public void setType(AccountType type) {
-		this.type = type;
+	public void setType(String type) {
+		this.type = AccountType.valueOf(type);
 	}
 	public boolean isApproved() {
 		return approved;
@@ -122,3 +122,4 @@ public class Account implements Serializable {
 	}
 	
 }
+

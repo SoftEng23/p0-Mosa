@@ -16,7 +16,7 @@ public interface UserDao {
 	 * @return the newly added user object
 	 */
 
-	public User addUser(User user);
+	public User addUser(User u);
 	
 	/**
 	 * Retrieves a user by id

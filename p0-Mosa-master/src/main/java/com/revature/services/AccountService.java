@@ -5,8 +5,12 @@ import com.revature.beans.Transaction;
 import com.revature.beans.User;
 import com.revature.beans.Transaction.TransactionType;
 import com.revature.dao.AccountDao;
+import com.revature.dao.AccountDaoDB;
 import com.revature.dao.AccountDaoFile;
+import com.revature.dao.TransactionDaoFile;
 import com.revature.exceptions.OverdraftException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class should contain the business logic for performing operations on Accounts
@@ -15,6 +19,7 @@ public class AccountService {
 	
 	public AccountDao actDao;
 	public static final double STARTING_BALANCE = 25d;
+	
 	
 	public AccountService(AccountDao dao) {
 		this.actDao = dao;
@@ -49,18 +54,28 @@ public class AccountService {
 	public void deposit(Account a, Double amount) {
 		if (amount < 0) {
 			throw new UnsupportedOperationException();
+		} else if(!a.isApproved()) {
+			throw new UnsupportedOperationException("Not approved");
 		} else {
+			
 			Transaction deposit = new Transaction();
+			AccountDaoFile update = new AccountDaoFile();
+			Account account = new Account();
+			AccountDaoDB dbupdate = new AccountDaoDB();
+			TransactionDaoFile tranDao = new TransactionDaoFile();
+			
 			deposit.setType(TransactionType.DEPOSIT);
 			deposit.setRecipient(a);
 			deposit.setSender(a);
 			deposit.setTimestamp();
 			deposit.setAmount(amount);
-			a.setBalance(a.getBalance() + amount);
-			a.getTransactions().add(deposit);
-			AccountDaoFile update = new AccountDaoFile();
-			update.updateAccount(a);
 			
+			a.getTransactions().add(deposit);
+			tranDao.addTransaction(deposit);
+			dbupdate.addTransaction(deposit);
+			a.setBalance(a.getBalance() + amount);
+			update.updateAccount(a);
+			dbupdate.updateAccount(a);
 		}
 	}
 	
@@ -82,10 +97,11 @@ public class AccountService {
 	 * @return the Account object that was created
 	 */
 	public Account createNewAccount(User u) {
-		Account newAct = new Account();  //def not right ask
-	  if (u == actDao) {
+	return actDao.addAccount(u.getAccounts().get(0));
+	//	Account newAct = new Account();  //def not right ask
+	  /*if (u == actDao) {
 		return null; }
-	  else{return newAct;}
+	  else{return newAct;} */
 	}
 	
 	/**
@@ -98,4 +114,10 @@ public class AccountService {
 	public boolean approveOrRejectAccount(Account a, boolean approval) {
 		return false;
 	}
+	public List<Account> getAccounts(User u) {
+		List<Account> accountList = new ArrayList<Account>();
+		accountList = u.getAccounts();
+		return accountList;
+	}
 }
+

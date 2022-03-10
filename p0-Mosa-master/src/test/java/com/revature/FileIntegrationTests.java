@@ -54,7 +54,7 @@ public class FileIntegrationTests extends PointWatcher {
 		testAct = new Account();
 		testAct.setId(1);
 		testAct.setOwnerId(1);
-		testAct.setType(AccountType.CHECKING);
+		testAct.setType(AccountType.CHECKING.toString());
 		testAct.setApproved(true);
 		testAct.setBalance(14.32);
 		adao.addAccount(testAct);
@@ -63,7 +63,7 @@ public class FileIntegrationTests extends PointWatcher {
 		testUser.setId(1);
 		testUser.setPassword("hello_world");
 		testUser.setUsername("testUser");
-		testUser.setUserType(UserType.CUSTOMER);
+		testUser.setUserType(UserType.CUSTOMER.toString());
 		udao.addUser(testUser);
 	}
 	
@@ -85,7 +85,7 @@ public class FileIntegrationTests extends PointWatcher {
 		Account secondAccount = new Account();
 		secondAccount.setId(2);
 		secondAccount.setOwnerId(1);
-		secondAccount.setType(AccountType.SAVINGS);
+		secondAccount.setType(AccountType.SAVINGS.toString());
 		secondAccount.setApproved(false);
 		secondAccount.setBalance(32.10);
 		adao.addAccount(secondAccount);
@@ -119,14 +119,14 @@ public class FileIntegrationTests extends PointWatcher {
 		Account newAccount = new Account();
 		newAccount.setId(1);
 		newAccount.setOwnerId(1);
-		newAccount.setType(AccountType.CHECKING);
+		newAccount.setType(AccountType.CHECKING.toString());
 		newAccount.setApproved(true);
 		newAccount.setBalance(14.32);
 		adao.addAccount(newAccount);
 		Account secondAccount = new Account();
 		secondAccount.setId(2);
 		secondAccount.setOwnerId(2);
-		secondAccount.setType(AccountType.SAVINGS);
+		secondAccount.setType(AccountType.SAVINGS.toString());
 		secondAccount.setApproved(false);
 		secondAccount.setBalance(32.10);
 		adao.addAccount(secondAccount);

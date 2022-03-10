@@ -48,7 +48,7 @@ public class DatabaseIntegrationTests extends PointWatcher {
 		toTest = new Account();
 		toTest.setId(1);
 		toTest.setOwnerId(1);
-		toTest.setType(AccountType.CHECKING);
+		toTest.setType(AccountType.CHECKING.toString());
 		toTest.setApproved(true);
 		toTest.setBalance(14.32);
 		adao.addAccount(toTest);
@@ -57,7 +57,7 @@ public class DatabaseIntegrationTests extends PointWatcher {
 		testUser.setId(1);
 		testUser.setPassword("hello_world");
 		testUser.setUsername("testUser");
-		testUser.setUserType(UserType.CUSTOMER);
+		testUser.setUserType(UserType.CUSTOMER.toString());
 		udao.addUser(testUser);
 	}
 	
@@ -77,7 +77,7 @@ public class DatabaseIntegrationTests extends PointWatcher {
 		Account secondAccount = new Account();
 		secondAccount.setId(2);
 		secondAccount.setOwnerId(1);
-		secondAccount.setType(AccountType.SAVINGS);
+		secondAccount.setType(AccountType.SAVINGS.toString());
 		secondAccount.setApproved(false);
 		secondAccount.setBalance(32.10);
 		adao.addAccount(secondAccount);
@@ -108,7 +108,7 @@ public class DatabaseIntegrationTests extends PointWatcher {
 		Account secondAccount = new Account();
 		secondAccount.setId(2);
 		secondAccount.setOwnerId(2);
-		secondAccount.setType(AccountType.SAVINGS);
+		secondAccount.setType(AccountType.SAVINGS.toString());
 		secondAccount.setApproved(false);
 		secondAccount.setBalance(32.10);
 		adao.addAccount(secondAccount);

@@ -2,7 +2,10 @@ package com.revature.dao;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import com.revature.beans.Transaction;
@@ -25,6 +28,16 @@ public class TransactionDaoFile implements TransactionDao {
 		}
 		return usersList;
 	}
+	public Transaction addTransaction(Transaction t) {
+		// TODO Auto-generated method stub
+				try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(userFile))) {
+					oos.writeObject(t);
+					System.out.println("Transaction added!!!");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return t;
+			}
 
 	@Override
 	public Transaction getTransaction(int transactionId) {

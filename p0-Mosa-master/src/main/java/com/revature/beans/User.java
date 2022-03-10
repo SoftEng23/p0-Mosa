@@ -67,9 +67,11 @@ public class User implements Serializable {
 		return userType;
 	}
 
-	public void setUserType(UserType userType) {
-		this.userType = userType;
+
+	public void setUserType(String userType) {
+		this.userType = UserType.valueOf(userType);
 	}
+
 
 	public List<Account> getAccounts() {
 		return accounts;
@@ -181,5 +183,6 @@ public class User implements Serializable {
 		this.userType = userType;
 	}
 
+	
 	
 }

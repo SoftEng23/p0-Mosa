@@ -1,4 +1,5 @@
 package com.revature.driver;
+import com.revature.utils.SessionCache;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -15,98 +16,44 @@ import com.revature.beans.Transaction;
 import com.revature.beans.Transaction.TransactionType;
 import com.revature.beans.User;
 import com.revature.beans.User.UserType;
-import com.revature.dao.AccountDao;
 import com.revature.dao.AccountDaoFile;
-import com.revature.dao.TransactionDao;
+import com.revature.dao.TransactionDaoDB;
 import com.revature.dao.TransactionDaoFile;
 import com.revature.dao.UserDao;
+import com.revature.dao.UserDaoDB;
 import com.revature.dao.UserDaoFile;
 import com.revature.services.AccountService;
 import com.revature.services.UserService;
 import com.revature.services.UserServiceImpl;
 import com.revature.services.UsersService;
+import com.revature.dao.AccountDao;
+import com.revature.dao.AccountDaoDB;
 
 /**
  * This is the entry point to the application
  */
-public class BankApplicationDriver implements Runnable { // implements Runnable multithread
-	static boolean LoggedOn = false;	
-	private static Connection conn;
-	private static Statement stmt;
-	private static PreparedStatement pstmt;
-	private static ResultSet rs;
+public class BankApplicationDriver {
+
 	public static void printLine() {
 		for (int i = 0; i < 80; i++) {
 			System.out.print("*");
 		}
 	}
 
-	public static void getConnection() {
-		try {
-			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/p0_user", "root", "Softw@re23!");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	public static void main(String[] args) throws ClassNotFoundException, SQLException {
-		
+	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		int choice = 0;
 		int id = 0;
-		//String user_type= "customer";
-		Integer accountId = null;
-		Integer ownerId = null;
-		Double balance = null;
-		AccountType type = null;
-		Boolean approved = true;
-	//	AccountType type = null;
-		List<Transaction> transactions = null;
-//		String fName =null;
-//		String lName =null;
-		String firstName = null;
-		String lastName = null;
-		String user_type = null;
-		//String username = null;
-		//String password = null;
-		UserDao userDao = new UserDaoFile();
-		
-		AccountDao accountDao = new AccountDaoFile();
-		UsersService usersService = new UserServiceImpl();
-		UserService userService = new UserService(userDao, accountDao);
-		Account accountService = new Account();
-		//AccountService accountService = null;
-		//TransactionService transactionService = null;
-		String Url = "jdbc:mysql://localhost:3306/p0";
-		String username = "root";
-		String password = "Softw@re23!";
-		//Step 2
-		Connection conn = DriverManager.getConnection(Url, username, password);
-		
-		//Step 3: Creating & Running the Queries
-		String query = "select * from p0_user";
-		Statement stmt = conn.createStatement();
-		ResultSet rs = stmt.executeQuery(query);
-		
-		//add insert query
-	/*	String query1 = "insert into p0_user (id,first_name,last_name,username,password,user_type) values (?,?,?,?,?,?)";
-		PreparedStatement pstmt = conn.prepareStatement(query1);
-		pstmt.setInt(1, 112);
-		pstmt.setString(2, "Jim");
-		pstmt.setString(3, "Wilson");
-		pstmt.setString(4, "jimmy");
-		pstmt.setString(5, "234");
-		pstmt.setString(6, "CUSTOMER");
-		pstmt.executeUpdate(); */
-		//Step 4: 
-		System.out.println("p0_user Table Content");
-		System.out.println("id \t first_name \t last_name ");
-		while(rs.next()) {
-			System.out.println(rs.getInt("id")+"\t" + rs.getString("first_name") + "\t\t" + rs.getString("last_name"));
-		}
-				
 		Scanner input = new Scanner(System.in);
+		String fName = null;
+		String lName = null;
+		String username = null;
+		String password = null;
+		UserDao userDao = new UserDaoDB();
+		AccountDao accountDao = new AccountDaoDB();
+		UserService userService = new UserService(userDao, accountDao);
+		AccountService accountService = new AccountService(accountDao);
+		UsersService usersService = new UserServiceImpl();
 		while (choice < 6) {
 			BankApplicationDriver.printLine();
 			System.out.println("***** \t\t\t\t\t\t\t\t\t\t *****");
@@ -115,232 +62,271 @@ public class BankApplicationDriver implements Runnable { // implements Runnable 
 			System.out.println("***** \t\t\t\t\t\t\t\t\t\t *****");
 			System.out.println("***** \t\t\t\t\t\t\t\t\t\t *****");
 			BankApplicationDriver.printLine();
-			System.out.println("\n\t\t\t 1. Login ");
-			System.out.println("\t\t\t 2. Register ");
-			System.out.println("\t\t\t 3. Make Deposit ");
-			System.out.println("\t\t\t 4. Make Withdrawal ");
-			System.out.println("\t\t\t 5. Create an Account ");
+			System.out.println("\n\t\t\t 1. Register ");
+			System.out.println("\t\t\t 2. Login ");
+			System.out.println("\t\t\t 3. View Customers ");
+			System.out.println("\t\t\t 4. Remove Customer ");
+			System.out.println("\t\t\t 5. Update Customer ");
 			System.out.println("\t\t\t 6. Exit");
 			System.out.print("Enter your Choice [1-6] :");
 			choice = input.nextInt();
 
 			switch (choice) {
 			case 1:
+				id = UserDaoFile.usersList.size();
+				System.out.print("Enter First Name :");
+				fName = input.next();
+				System.out.print("Enter Last Name :");
+				lName = input.next();
+				System.out.print("Enter Userame :");
+				username = input.next();
+				System.out.print("Enter Password :");
+				password = input.next();
+
+				User user = new User(id++, username, password, fName, lName, UserType.CUSTOMER);
+				userService.register(user);
+				break;
+			case 2:
 				//id = UserDaoFile.usersList.size();
 				usersService = new UserServiceImpl();
 				System.out.print("Enter Username :");
 				username = input.next();
 				System.out.print("Enter Password :");
 				password = input.next();
+				User loggedUser = new User();
 				if (usersService.login(username, password))
 					System.out.println("Login is Successful!!!");
-				else {
+					SessionCache.setCurrentUser(loggedUser);
+				/*else {
 					System.out.println("Error while Logging. Pls Check the username / password!!!");
-				}
-				/*User checkLogin = userDao.getUser(username, password);
-				if(checkLogin == null) {
-					throw new InvalidCredentialsException(); 
-				}else if(!checkLogin.getPassword().equals(password)){
-					throw new InvalidCredentialsException();
-				}else {
-					System.out.println("Login Successful");
-				}
-				 */
-				break;
-			//	User checkLogin = userDao.getUser(username, password);
-			/*	if(checkLogin == null) {
-					throw new InvalidCredentialsException(); 
-				}else if(!checkLogin.getPassword().equals(password)){
-					throw new InvalidCredentialsException();
-				}else {
+				}*/
+				
+				if (loggedUser != null) {
 					System.out.println("Login is Successful!!!");
-				} */
-			
+					SessionCache.setCurrentUser(loggedUser);
+		/*		else {
+					System.out.println("Error while Logging. Pls Check the username / password!!!");
+*/
+					int option = 0;
+					int accountType = 0;
+					double startingBalance = 0;
+
+					while (option <= 6) {
+						System.out.println("\t\t\t 1.Apply Account ");
+						System.out.println("\t\t\t 2.Deposit");
+						System.out.println("\t\t\t 3.Withdraw ");
+						System.out.println("\t\t\t 4.Fund Transfer ");
+						System.out.println("\t\t\t 5.Approve/Reject Account ");
+						System.out.println("\t\t\t 6.Logout ");
+						System.out.print("Enter your option [1-6]:");
+						option = input.nextInt();
+						switch (option) {
+						case 1:
+							List<Transaction> transactions = null;
+							Integer ownerId = null;
+							System.out.print("\t\t\t Let's Create An Account:");
+							System.out.print("\n Enter 1 for Checking or 2 for Savings:");
+							
+							Integer checks = input.nextInt();
+							
+							
+							if(checks == 1) {
+								System.out.println("\n Let's Create Your Checking account");
+							}
+							else {
+								System.out.println("\n Let's Create Your Savings account");
+							}
+							//String user_Type = "customer";
+							
+							System.out.println("Enter Your SSN to Create Account: ");
+							//String names = input.next();
+							//	String g = input.next();
+							
+						
+							id = input.nextInt();
+							String accnum = "817253434";
+							transactions = TransactionDaoFile.usersList;
+							ownerId = 6;
+							Double balances2 = (double) 50000;
+							Account accountServices = new Account();
+							accountServices.setTransactions(transactions);
+							//accountServices.setType(AccountType.SAVINGS);
+							accountServices.setApproved(true);
+							accountServices.setOwnerId(ownerId);
+							accountServices.setId(id);
+							accountServices.setBalance(balances2);
+							System.out.println("Thank you. You have created a new account " + accountServices);
+							
+							System.out.println("Your account # is: " + accnum);
+							/*System.out.print("select the Account Type [1.Checking/2.Saving]: ");
+							accountType = input.nextInt();
+							System.out.print("Enter Starting balance:");
+							startingBalance = input.nextDouble();
+							Account account = new Account();
+							account.setBalance(startingBalance);
+							System.out.println("Logged user ID :" + SessionCache.getCurrentUser().get().getId());
+							account.setOwnerId(loggedUser.getId());
+							account.setType(accountType == 1 ? AccountType.CHECKING.toString()
+									: AccountType.SAVINGS.toString());
+							List<Account> accountList = new ArrayList<Account>();
+							accountList.add(account);
+							loggedUser.setAccounts(accountList);
+							accountService.createNewAccount(loggedUser);*/
+							break;
+						case 2:
+						//	Integer ownerId = null;
+						//	List<Transaction> transactions = null;
+							Account accountsService = new Account();
+							ownerId = 2;
+							usersService = new UserServiceImpl();
+							//id = AccountDaoFile.usersList.size();
+							id = 2;
+							transactions = TransactionDaoFile.usersList;
+						
+							Double balances = (double) 40000;
+							accountsService = new Account();
+							accountsService.setTransactions(transactions);
+						//	accountsService.setType(AccountType.CHECKING);
+							accountsService.setApproved(true);
+							accountsService.setOwnerId(ownerId);
+							accountsService.setId(id);
+							accountsService.setBalance(balances);
+							
+							System.out.print("\t\t\t Let's Make A Deposit:");
+							System.out.print("\n Enter 1 for Checking or 2 for Savings:");
+							
+							Integer checking = input.nextInt();
+							
+							
+							if(checking == 1) {
+								System.out.println("\t\t\t==How Much Do You Want to Deposit into Checkings?== ");
+							}
+							else {
+								System.out.println("\t\t\t==How Much Do You Want to Deposit into Savings?== ");
+							}
+						//	Account sender = input.next();
+							Double amounts = input.nextDouble();
+							Transaction list = new Transaction();
+							list.setType(TransactionType.DEPOSIT);
+							list.setSender(accountsService);
+							list.getAmount();
+							list.setAmount(amounts);
+							list.setTimestamp();
+							list.setRecipient(accountsService);
+							System.out.println(list);
+							System.out.println("\n You deposited: " + amounts);
+							break;
+						/*	System.out.println("Available Accounts for this user");
+							accountService.getAccounts(loggedUser).forEach(System.out::println);
+							System.out.print("Enter Account ID to Deposit :");
+							int accountId = 0 ;
+							accountId = input.nextInt();
+							System.out.print("Enter the amount to deposit :");
+							double amount = 0;
+							amount = input.nextDouble();
+							account = accountDao.getAccount(accountId);
+							accountService.deposit(account, amount); */
+							
+						case 3:
+							ownerId = 4;
+							id = AccountDaoFile.usersList.size();
+							Account acc2 = new Account();
+							acc2.getId();
+							acc2.setOwnerId(ownerId);
+							
+							acc2.getType();
+							acc2.getTransactions();
+							System.out.print("\t\t\t Let's Make A Withdrawal:");
+							System.out.print("\n Enter 1 for Checking or 2 for Savings:");
+							
+							Integer check = input.nextInt();
+							
+							
+							if(check == 1) {
+								System.out.println("\n\t\t\t==How Much Do You Want to Withdraw into Checkings?== ");
+							}
+							else {
+								System.out.println("\t\t\t==How Much Do You Want to Withdraw into Savings?== ");
+							}
+						//	Account sender = null;
+							Double amount2 = input.nextDouble();
+							acc2.getBalance();
+							System.out.print(acc2.getBalance());
+							
+							
+							Transaction list2 = new Transaction();
+							list2.setType(TransactionType.WITHDRAWAL);
+						//	list2.setSender(acc2);
+							list2.getAmount();
+							list2.setAmount(amount2);
+							list2.setTimestamp();
+							System.out.println(list2);
+							System.out.println("\n You Made of Withdrawal for: " + amount2);
+							break;
 					
-			case 2:
-				/*usersService = new UserServiceImpl();
-				System.out.print("Enter Id :");
-				id = input.nextInt();
-				System.out.print("Enter Username :");
-				username = input.next();
-				System.out.print("Enter Password :");
-				password = input.next();
-				System.out.print("Enter First Name :");
-				firstName = input.next();
-				System.out.print("Enter Last Name :");
-				lastName = input.next();
-				System.out.println("Are you a Customer or Employee?");
-				user_type = input.next();
-				usersService.register(id,username,password,firstName, lastName, user_type);
-				System.out.println("You have successfully registered");
-				break; */
-				User newUser = null;
-			//	id = UserDaoFile.usersList.size();
-				
-				System.out.println("Enter SSN:");
-				id = input.nextInt();
-				System.out.print("Enter Username :");
-				username = input.next();
-				System.out.print("Enter First Name :");
-				firstName = input.next();
-				System.out.print("Enter Last Name :");
-				lastName = input.next();
-				
-				System.out.print("Enter Password :");
-				password = input.next();
-				
-				newUser = new User(id++, firstName, lastName, username, password, UserType.CUSTOMER);
-				newUser.setFirstName(firstName);
-				newUser.setLastName(lastName);
-				newUser.setUsername(username);
-				newUser.setPassword(password);
-				userService.register(newUser);
-				System.out.println(newUser);
-	
+						case 4:
+
+							break;
+						case 5:
+							break;
+						case 6:
+							System.out.print("Do you want to Logout? (1.Yes/2.No) :");
+							int logout = 0;
+							logout = input.nextInt();
+							if (logout == 1) {
+								SessionCache.setCurrentUser(null);
+								System.out.println("You have logged out");
+							}
+							System.exit(0);
+							break;
+						default:
+							System.out.println("Enter a number between 1 to 6");
+							break;
+						}
+
+					}
+				}
 				break;
 			case 3:
-				ownerId = 2;
-				usersService = new UserServiceImpl();
-				//id = AccountDaoFile.usersList.size();
-				id = 2;
-				transactions = TransactionDaoFile.usersList;
-			
-				Double balances = (double) 40000;
-				accountService = new Account();
-				accountService.setTransactions(transactions);
-				accountService.setType(AccountType.CHECKING);
-				accountService.setApproved(true);
-				accountService.setOwnerId(ownerId);
-				accountService.setId(id);
-				accountService.setBalance(balances);
-				
-				System.out.print("\t\t\t Let's Make A Deposit:");
-				System.out.print("\n Enter 1 for Checking or 2 for Savings:");
-				
-				Integer checking = input.nextInt();
-				
-				
-				if(checking == 1) {
-					System.out.println("\t\t\t==How Much Do You Want to Deposit into Checkings?== ");
-				}
-				else {
-					System.out.println("\t\t\t==How Much Do You Want to Deposit into Savings?== ");
-				}
-			//	Account sender = input.next();
-				Double amount = input.nextDouble();
-				Transaction list = new Transaction();
-				list.setType(TransactionType.DEPOSIT);
-				list.setSender(accountService);
-				list.getAmount();
-				list.setAmount(amount);
-				list.setTimestamp();
-				list.setRecipient(accountService);
-				System.out.println(list);
-				System.out.println("\n You deposited: " + amount);
+				userDao.getAllUsers().forEach(System.out::println);
 				break;
 			case 4:
-				LoggedOn = true;
-			//	System.out.println(userDao.getAllUsers());
-				id = AccountDaoFile.usersList.size();
-				Account acc2 = new Account();
-				acc2.getId();
-				acc2.setOwnerId(ownerId);
-				
-				acc2.getType();
-				acc2.getTransactions();
-				System.out.print("\t\t\t Let's Make A Withdrawal:");
-				System.out.print("\n Enter 1 for Checking or 2 for Savings:");
-				
-				Integer check = input.nextInt();
-				
-				
-				if(check == 1) {
-					System.out.println("\n\t\t\t==How Much Do You Want to Withdraw into Checkings?== ");
-				}
-				else {
-					System.out.println("\t\t\t==How Much Do You Want to Withdraw into Savings?== ");
-				}
-			//	Account sender = null;
-				Double amount2 = input.nextDouble();
-				acc2.getBalance();
-				System.out.print(acc2.getBalance());
-				
-				
-				Transaction list2 = new Transaction();
-				list2.setType(TransactionType.WITHDRAWAL);
-			//	list2.setSender(acc2);
-				list2.getAmount();
-				list2.setAmount(amount2);
-				list2.setTimestamp();
-				System.out.println(list2);
-				System.out.println("\n You Made of Withdrawal for: " + amount2);
+				System.out.print("Enter Id of the customer to remove: ");
+				id = input.nextInt();
+				User u = userDao.getUser(id);
+				userDao.removeUser(u);
 				break;
 			case 5:
-			
-				System.out.print("\t\t\t Let's Create An Account:");
-				System.out.print("\n Enter 1 for Checking or 2 for Savings:");
-				
-				Integer checks = input.nextInt();
-				
-				
-				if(checks == 1) {
-					System.out.println("\n Let's Create Your Checking account");
-				}
-				else {
-					System.out.println("\n Let's Create Your Savings account");
-				}
-				//String user_Type = "customer";
-				
-				System.out.println("Enter Your SSN to Create Account: ");
-				//String names = input.next();
-				//	String g = input.next();
-				
-			
+				System.out.print("Enter Id of the customer to Update: ");
 				id = input.nextInt();
-				String accnum = "817253434";
-				transactions = TransactionDaoFile.usersList;
-				ownerId = 6;
-				Double balances2 = (double) 50000;
-				accountService = new Account();
-				accountService.setTransactions(transactions);
-				accountService.setType(AccountType.SAVINGS);
-				accountService.setApproved(true);
-				accountService.setOwnerId(ownerId);
-				accountService.setId(id);
-				accountService.setBalance(balances2);
-				System.out.println("Thank you. You have created a new account " + accountService);
+				System.out.print("Enter First Name to Update :");
+				fName = input.next();
+				System.out.print("Enter Last Name to Update:");
+				lName = input.next();
+				System.out.print("Enter Password to Update:");
+				password = input.next();
+				User updatedUser = new User();
+				updatedUser.setId(id);
+				updatedUser.setFirstName(fName);
+				updatedUser.setLastName(lName);
+				updatedUser.setUsername(username);
+				updatedUser.setPassword(password);
+				updatedUser.setUserType("CUSTOMER");
 				
-				System.out.println("Your account # is: " + accnum);
+				userDao.updateUser(updatedUser);
 				break;
 			case 6:
 				System.out.println("Thanks for using Revature Bank!!! Have a Nice Day!!!");
 				System.exit(0);
 				break;
+
 			default:
 				break;
-			
-			
-					
-				}                          
+			}
 
 		}
 
 		input.close();
-		if (rs!= null)
-			rs.close();
-		if (stmt != null)
-			stmt.close();
-		if (conn != null)
-			conn.close();
-		
-		}
-																		
+	}
 
-
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		System.out.println("Inside BankApplicationDriver class");
-
-	} 
 }

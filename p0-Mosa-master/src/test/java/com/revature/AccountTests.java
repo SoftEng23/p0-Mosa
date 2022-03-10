@@ -145,9 +145,9 @@ public class AccountTests extends PointWatcher {
 	@Points(1)
 	public void testEmployeeCanApproveAccount() {
 		User dummyEmpl = new User();
-		dummyEmpl.setUserType(UserType.EMPLOYEE);
+		dummyEmpl.setUserType(UserType.EMPLOYEE.toString());
 		User dummyCustomer = new User();
-		dummyCustomer.setUserType(UserType.CUSTOMER);
+		dummyCustomer.setUserType(UserType.CUSTOMER.toString());
 		Account act = actSrv.createNewAccount(dummyCustomer);
 		SessionCache.setCurrentUser(dummyEmpl);
 		assertFalse(act.isApproved());
@@ -159,7 +159,7 @@ public class AccountTests extends PointWatcher {
 	@Points(1)
 	public void testCustomerCannotApproveAccount() {
 		User dummyCustomer = new User();
-		dummyCustomer.setUserType(UserType.CUSTOMER);
+		dummyCustomer.setUserType(UserType.CUSTOMER.toString());
 		Account act = actSrv.createNewAccount(dummyCustomer);
 		SessionCache.setCurrentUser(dummyCustomer);
 		assertFalse(act.isApproved());
