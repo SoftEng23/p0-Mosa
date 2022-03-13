@@ -77,6 +77,7 @@ public class AccountService {
 			update.updateAccount(a);
 			dbupdate.updateAccount(a);
 		}
+	
 	}
 	
 	/**
@@ -89,8 +90,34 @@ public class AccountService {
 	 * @param amount the monetary value to transfer
 	 */
 	public void transfer(Account fromAct, Account toAct, double amount) {
+		if (amount < 0) {
+			throw new UnsupportedOperationException();
+		} else if(!fromAct.isApproved()) {
+			throw new UnsupportedOperationException("Not approved");
+		} else {
+			
+			Transaction deposit = new Transaction();
+			AccountDaoFile update = new AccountDaoFile();
+			Account account = new Account();
+			AccountDaoDB dbupdate = new AccountDaoDB();
+			TransactionDaoFile tranDao = new TransactionDaoFile();
+			
+			deposit.setType(TransactionType.DEPOSIT);
+			deposit.setRecipient(toAct);
+			deposit.setSender(fromAct);
+			deposit.setTimestamp();
+			deposit.setAmount(amount);
+			
+			toAct.getTransactions().add(deposit);
+			tranDao.addTransaction(deposit);
+			dbupdate.addTransaction(deposit);
+			toAct.setBalance(toAct.getBalance() + amount);
+			update.updateAccount(toAct);
+			dbupdate.updateAccount(toAct);
+		}
 		
 	}
+	
 	
 	/**
 	 * Creates a new account for a given User

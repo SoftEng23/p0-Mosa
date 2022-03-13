@@ -165,13 +165,35 @@ public class AccountDaoDB implements AccountDao {
 		
 	}
 	public Account updateAccount(Account a) {
-		// TODO Auto-generated method stub
-		return null;
+		String query = "update p0_user set owner_id=?, balance=?, account_type=? where id = ?";
+		int status = 0;
+		try {
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, a.getOwnerId());
+			pstmt.setDouble(2, a.getBalance());
+			pstmt.setObject(3, a.getType().toString());
+			//pstmt.setBoolean(4, a.isApproved());
+			status = pstmt.executeUpdate();
+			if(status>0) {
+				System.out.println("Account Updated");
+				
+			}
+		} catch (SQLException e){
+			e.printStackTrace();
+		}
+		return a;
 	}
-
 	public boolean removeAccount(Account a) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+		String query = "delete from accounts where id =" + a.getId();
+		boolean status = false;
+		try {
+			stmt = conn.createStatement();
+			status = stmt.execute(query);
 
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return status;
+	}
 }

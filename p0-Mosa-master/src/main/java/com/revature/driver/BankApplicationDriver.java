@@ -88,22 +88,31 @@ public class BankApplicationDriver {
 				break;
 			case 2:
 				//id = UserDaoFile.usersList.size();
+			
+				// id = UserDaoFile.usersList.size();
 				usersService = new UserServiceImpl();
 				System.out.print("Enter Username :");
 				username = input.next();
 				System.out.print("Enter Password :");
 				password = input.next();
-				User loggedUser = new User();
-				if (usersService.login(username, password))
+				usersService.login(username, password);
+				if (usersService.login(username, password)) {
 					System.out.println("Login is Successful!!!");
-					SessionCache.setCurrentUser(loggedUser);
+					
+			/*	}else {
+					System.out.println("Error while Logging In. Please Check the username and/or password!!!"); */
+					
+			//	}if (loggedUser != null) {
+			//			System.out.println("Logged in Successfully!!!");
+			//			SessionCache.setCurrentUser(loggedUser);
+
 				/*else {
 					System.out.println("Error while Logging. Pls Check the username / password!!!");
 				}*/
 				
-				if (loggedUser != null) {
-					System.out.println("Login is Successful!!!");
-					SessionCache.setCurrentUser(loggedUser);
+			//	if (loggedUser != null) {
+			//		System.out.println("Login is Successful!!!");
+			//		SessionCache.setCurrentUser(loggedUser);
 		/*		else {
 					System.out.println("Error while Logging. Pls Check the username / password!!!");
 */
