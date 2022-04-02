@@ -1,4 +1,5 @@
 # Banking Console App - Project 0
+View the master folder for the completed demo bank app.
 
 ## Description
 The Bank app is a console-based application that simulates banking operations. 
